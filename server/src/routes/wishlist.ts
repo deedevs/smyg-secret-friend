@@ -31,16 +31,16 @@ router.get('/me', requireAuth, async (req: Request, res: Response) => {
 });
 
 // Update my wishlist
-router.put('/me', requireAuth, validateWishlistItems, async (req: Request, res: Response) => {
+router.put('/me', requireAuth,  async (req: Request, res: Response) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        status: 'error',
-        message: errors.array()[0].msg,
-        code: 'VALIDATION_ERROR'
-      });
-    }
+    // const errors = validationResult(req);
+    // if (!errors.isEmpty()) {
+    //   return res.status(400).json({
+    //     status: 'error',
+    //     message: errors.array()[0].msg,
+    //     code: 'VALIDATION_ERROR'
+    //   });
+    // }
 
     const { items } = req.body;
     console.log('Updating wishlist with items:', items); // Debug log
