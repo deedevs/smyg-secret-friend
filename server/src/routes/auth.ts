@@ -37,7 +37,7 @@ router.post('/register', validateRegister, async (req: Request, res: Response) =
 
     res.cookie(config.cookieName, token, {
       httpOnly: true,
-      secure: config.cookieSecure,
+      secure: true,
       maxAge: 24 * 60 * 60 * 1000, // 1 day
       domain: config.domain,
       sameSite: 'strict'
@@ -69,7 +69,7 @@ router.post('/login', async (req: Request, res: Response) => {
 
     res.cookie(config.cookieName, token, {
       httpOnly: true,
-      secure: config.cookieSecure,
+      secure: true,
       maxAge: 24 * 60 * 60 * 1000, // 1 day
       domain: config.domain,
       sameSite: 'strict'

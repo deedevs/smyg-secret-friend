@@ -9,7 +9,7 @@ const path_1 = __importDefault(require("path"));
 // Load environment variables from .env file
 dotenv_1.default.config({ path: path_1.default.join(__dirname, '../.env') });
 const MONGODB_URI = 'mongodb+srv://dladipo21:pWhs70U0bqHWlNcj@washme-app.lcwiu.mongodb.net/smyg-secret-friend?retryWrites=true&w=majority&appName=washme-app';
-const isProd = process.env.NODE_ENV === 'production';
+const isProd = true;
 exports.config = {
     port: process.env.PORT || 4000,
     mongoUri: process.env.MONGO_URI || MONGODB_URI,

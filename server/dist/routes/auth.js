@@ -37,7 +37,7 @@ router.post('/register', validateRegister, async (req, res) => {
         const { user, token } = await authService_1.AuthService.register(fullName, password);
         res.cookie(config_1.config.cookieName, token, {
             httpOnly: true,
-            secure: config_1.config.cookieSecure,
+            secure: true,
             maxAge: 24 * 60 * 60 * 1000, // 1 day
             domain: config_1.config.domain,
             sameSite: 'strict'
@@ -67,7 +67,7 @@ router.post('/login', async (req, res) => {
         const { user, token } = await authService_1.AuthService.login(fullName, password);
         res.cookie(config_1.config.cookieName, token, {
             httpOnly: true,
-            secure: config_1.config.cookieSecure,
+            secure: true,
             maxAge: 24 * 60 * 60 * 1000, // 1 day
             domain: config_1.config.domain,
             sameSite: 'strict'
