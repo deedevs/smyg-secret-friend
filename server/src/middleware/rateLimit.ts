@@ -16,19 +16,21 @@ export function rateLimit(
   res: Response,
   next: NextFunction
 ): void {
-  const ip = req.ip;
-  const now = Date.now();
+  const ip = req.ip || 'unknown';
 
   if (!store[ip]) {
     store[ip] = {
       count: 1,
-      resetTime: now + WINDOW_MS,
+      resetTime: Date.now() + WINDOW_MS,
     };
     next();
     return;
   }
 
-  if (now > store[ip].resetTime) {
+  const now = Date.now();
+  const clientStore = store[ip];
+
+  if (now > clientStore.resetTime) {
     store[ip] = {
       count: 1,
       resetTime: now + WINDOW_MS,
@@ -37,13 +39,15 @@ export function rateLimit(
     return;
   }
 
-  if (store[ip].count >= MAX_REQUESTS) {
+  if (clientStore.count >= MAX_REQUESTS) {
     res.status(429).json({
+      status: 'error',
       message: 'Too many requests, please try again later',
+      code: 'RATE_LIMIT_EXCEEDED'
     });
     return;
   }
 
-  store[ip].count++;
+  clientStore.count++;
   next();
 }

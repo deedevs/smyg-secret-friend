@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { requireAuth, requireAdmin } from '../middleware/auth';
 import { SecretService } from '../services/secretService';
 import { AssignmentService } from '../services/assignmentService';
@@ -8,13 +8,13 @@ import { System } from '../models/System';
 const router = express.Router();
 
 // Get system status and participants with assignments
-router.get('/status', requireAuth, requireAdmin, async (req, res) => {
+router.get('/status', requireAuth, requireAdmin, async (req: Request, res: Response) => {
   try {
     const [status, participants] = await Promise.all([
       AssignmentService.getSystemStatus(),
       User.find({ participating: true })
         .select('fullName participating')
-        .populate('assignedFriendId', 'fullName')
+        .populate<{ assignedFriendId: { _id: string; fullName: string } }>('assignedFriendId', 'fullName')
     ]);
 
     res.json({
@@ -40,7 +40,7 @@ router.get('/status', requireAuth, requireAdmin, async (req, res) => {
 });
 
 // Delete a participant
-router.delete('/participants/:userId', requireAuth, requireAdmin, async (req, res) => {
+router.delete('/participants/:userId', requireAuth, requireAdmin, async (req: Request, res: Response) => {
   try {
     const system = await System.findOne();
     if (!system) {
@@ -60,7 +60,6 @@ router.delete('/participants/:userId', requireAuth, requireAdmin, async (req, re
       throw new Error('Cannot delete an admin user');
     }
 
-    // Delete the user's wishlist if it exists
     await User.findByIdAndDelete(req.params.userId);
 
     res.json({
@@ -76,7 +75,7 @@ router.delete('/participants/:userId', requireAuth, requireAdmin, async (req, re
 });
 
 // Start secret friend assignment
-router.post('/start', requireAuth, requireAdmin, async (req, res) => {
+router.post('/start', requireAuth, requireAdmin, async (req: Request, res: Response) => {
   try {
     const assignments = await AssignmentService.performAssignment();
     res.json({
@@ -92,7 +91,7 @@ router.post('/start', requireAuth, requireAdmin, async (req, res) => {
 });
 
 // Reset the system
-router.post('/reset', requireAuth, requireAdmin, async (req, res) => {
+router.post('/reset', requireAuth, requireAdmin, async (req: Request, res: Response) => {
   try {
     await AssignmentService.resetAssignments();
     res.json({

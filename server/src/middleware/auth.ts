@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { verifyToken } from '../utils/jwt';
-import { User } from '../models/User';
+import { User, IUser } from '../models/User';
 import { config } from '../config';
 
 declare global {
   namespace Express {
     interface Request {
-      user?: any;
+      user?: IUser;
     }
   }
 }
@@ -44,8 +44,7 @@ export async function requireAuth(
   } catch (error) {
     console.error('Auth error:', error);
     
-    // Handle different types of auth errors
-    if (error.message === 'Invalid token') {
+    if (error instanceof Error && error.message === 'Invalid token') {
       res.status(401).json({ 
         status: 'error',
         message: 'Session expired, please log in again',

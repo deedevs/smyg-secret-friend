@@ -1,8 +1,13 @@
 import { User, IUser } from '../models/User';
 import { System } from '../models/System';
+import mongoose from 'mongoose';
 
 export class SecretService {
   static async registerParticipant(userId: string): Promise<IUser> {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      throw new Error('Invalid user ID');
+    }
+
     const [user, system] = await Promise.all([
       User.findById(userId),
       System.findOne(),
@@ -31,6 +36,10 @@ export class SecretService {
   }
 
   static async getAssignedFriend(userId: string): Promise<IUser | null> {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      throw new Error('Invalid user ID');
+    }
+
     const user = await User.findById(userId);
     if (!user) {
       throw new Error('User not found');

@@ -1,5 +1,5 @@
-import express from 'express';
-import { body } from 'express-validator';
+import express, { Request, Response } from 'express';
+import { body, validationResult } from 'express-validator';
 import { requireAuth } from '../middleware/auth';
 import { WishlistService } from '../services/wishlistService';
 
@@ -14,9 +14,9 @@ const validateWishlistItems = [
 ];
 
 // Get my wishlist
-router.get('/me', requireAuth, async (req, res) => {
+router.get('/me', requireAuth, async (req: Request, res: Response) => {
   try {
-    const items = await WishlistService.getWishlist(req.user._id);
+    const items = await WishlistService.getWishlist(req.user!._id.toString());
     res.json({
       status: 'success',
       data: { items }
@@ -31,11 +31,20 @@ router.get('/me', requireAuth, async (req, res) => {
 });
 
 // Update my wishlist
-router.put('/me', requireAuth, validateWishlistItems, async (req, res) => {
+router.put('/me', requireAuth, validateWishlistItems, async (req: Request, res: Response) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        status: 'error',
+        message: errors.array()[0].msg,
+        code: 'VALIDATION_ERROR'
+      });
+    }
+
     const { items } = req.body;
     console.log('Updating wishlist with items:', items); // Debug log
-    const wishlist = await WishlistService.updateWishlist(req.user._id, items);
+    const wishlist = await WishlistService.updateWishlist(req.user!._id.toString(), items);
     res.json({
       status: 'success',
       data: { items: wishlist.items }
@@ -50,9 +59,9 @@ router.put('/me', requireAuth, validateWishlistItems, async (req, res) => {
 });
 
 // Get assigned friend's wishlist
-router.get('/friend', requireAuth, async (req, res) => {
+router.get('/friend', requireAuth, async (req: Request, res: Response) => {
   try {
-    const items = await WishlistService.getAssignedFriendWishlist(req.user._id);
+    const items = await WishlistService.getAssignedFriendWishlist(req.user!._id.toString());
     res.json({
       status: 'success',
       data: { items }

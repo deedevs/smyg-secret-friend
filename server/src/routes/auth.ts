@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import { AuthService } from '../services/authService';
 import { requireAuth } from '../middleware/auth';
@@ -20,7 +20,7 @@ const validateRegister = [
 ];
 
 // Register
-router.post('/register', validateRegister, async (req, res) => {
+router.post('/register', validateRegister, async (req: Request, res: Response) => {
   try {
     // Check for validation errors
     const errors = validationResult(req);
@@ -39,6 +39,8 @@ router.post('/register', validateRegister, async (req, res) => {
       httpOnly: true,
       secure: config.cookieSecure,
       maxAge: 24 * 60 * 60 * 1000, // 1 day
+      domain: config.domain,
+      sameSite: 'strict'
     });
 
     res.json({
@@ -60,7 +62,7 @@ router.post('/register', validateRegister, async (req, res) => {
 });
 
 // Login
-router.post('/login', async (req, res) => {
+router.post('/login', async (req: Request, res: Response) => {
   try {
     const { fullName, password } = req.body;
     const { user, token } = await AuthService.login(fullName, password);
@@ -69,6 +71,8 @@ router.post('/login', async (req, res) => {
       httpOnly: true,
       secure: config.cookieSecure,
       maxAge: 24 * 60 * 60 * 1000, // 1 day
+      domain: config.domain,
+      sameSite: 'strict'
     });
 
     res.json({
@@ -95,8 +99,11 @@ router.post('/login', async (req, res) => {
 });
 
 // Logout
-router.post('/logout', (req, res) => {
-  res.clearCookie(config.cookieName);
+router.post('/logout', (req: Request, res: Response) => {
+  res.clearCookie(config.cookieName, {
+    domain: config.domain,
+    path: '/'
+  });
   res.json({
     status: 'success',
     message: 'Logged out successfully'
@@ -104,9 +111,9 @@ router.post('/logout', (req, res) => {
 });
 
 // Get current user
-router.get('/me', requireAuth, async (req, res) => {
+router.get('/me', requireAuth, async (req: Request, res: Response) => {
   try {
-    const user = await AuthService.getUser(req.user._id);
+    const user = await AuthService.getUser(req.user!._id.toString());
     res.json({
       status: 'success',
       user: {

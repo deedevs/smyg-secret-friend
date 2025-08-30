@@ -1,8 +1,13 @@
 import { User, IUser } from '../models/User';
 import { System } from '../models/System';
 
+interface Assignment {
+  from: string;
+  to: string;
+}
+
 export class AssignmentService {
-  static async performAssignment(): Promise<{ from: string; to: string }[]> {
+  static async performAssignment(): Promise<Assignment[]> {
     const system = await System.findOne();
     if (!system) {
       throw new Error('System not initialized');
@@ -105,9 +110,9 @@ export class AssignmentService {
     await Promise.all(updates);
   }
 
-  private static async getExistingAssignments(): Promise<{ from: string; to: string }[]> {
+  private static async getExistingAssignments(): Promise<Assignment[]> {
     const users = await User.find({ participating: true })
-      .populate('assignedFriendId', 'fullName');
+      .populate<{ assignedFriendId: IUser }>('assignedFriendId', 'fullName');
     
     return users.map(user => ({
       from: user.fullName,
