@@ -19,7 +19,7 @@ export default function Admin() {
 
   const startMutation = useMutation({
     mutationFn: admin.startAssignment,
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-status'] });
       queryClient.invalidateQueries({ queryKey: ['assignedFriend'] });
       toast.success('Secret friend assignments completed!');

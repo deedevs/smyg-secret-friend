@@ -2,13 +2,27 @@ import { motion } from 'framer-motion';
 import Logo from './Logo';
 import AnimatedBackground from './AnimatedBackground';
 
-interface AuthLayoutProps {
+export interface AuthLayoutProps {
   children: React.ReactNode;
   title: string;
-  description?: string;
+  description: string;
+  maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 }
 
-export default function AuthLayout({ children, title, description }: AuthLayoutProps) {
+const maxWidthClasses = {
+  sm: 'max-w-sm',
+  md: 'max-w-md',
+  lg: 'max-w-lg',
+  xl: 'max-w-xl',
+  '2xl': 'max-w-2xl',
+};
+
+export default function AuthLayout({
+  children,
+  title,
+  description,
+  maxWidth = '2xl',
+}: AuthLayoutProps) {
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center p-4">
       <AnimatedBackground />
@@ -16,7 +30,7 @@ export default function AuthLayout({ children, title, description }: AuthLayoutP
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md space-y-8 relative z-10"
+        className={`w-full ${maxWidthClasses[maxWidth]} space-y-8 relative z-10`}
       >
         {/* Logo and Title */}
         <div className="text-center">
@@ -30,6 +44,11 @@ export default function AuthLayout({ children, title, description }: AuthLayoutP
             <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-secondary-600">
               {title}
             </h1>
+            {description && (
+              <p className="text-lg text-gray-600">
+                {description}
+              </p>
+            )}
           </motion.div>
         </div>
 
@@ -42,18 +61,6 @@ export default function AuthLayout({ children, title, description }: AuthLayoutP
         >
           {children}
         </motion.div>
-
-        {/* Description */}
-        {description && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="text-center text-gray-700 text-sm px-6 mt-6 leading-relaxed"
-          >
-            {description}
-          </motion.div>
-        )}
       </motion.div>
     </div>
   );

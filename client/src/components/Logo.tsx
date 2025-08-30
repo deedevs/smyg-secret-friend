@@ -3,14 +3,12 @@ import { Link } from 'react-router-dom';
 interface LogoProps {
   className?: string;
   size?: 'sm' | 'md' | 'lg';
-  showText?: boolean;
   linkTo?: string;
 }
 
 export default function Logo({ 
   className = '', 
   size = 'md',
-  showText = true,
   linkTo = '/'
 }: LogoProps) {
   const sizeClasses = {

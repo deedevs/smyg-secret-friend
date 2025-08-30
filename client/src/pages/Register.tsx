@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../lib/auth';
 import AuthLayout from '../components/AuthLayout';
-import NameInput from '../components/NameInput';
+import QuickStartGuide from '../components/QuickStartGuide';
 
 export default function Register() {
   const { register } = useAuth();
@@ -11,15 +11,9 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isNameValid, setIsNameValid] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isNameValid) {
-      setError('Please enter a valid full name');
-      return;
-    }
-
     setError('');
     setIsLoading(true);
 
@@ -36,7 +30,8 @@ export default function Register() {
   return (
     <AuthLayout
       title="Join the Fun! 🎉"
-      subtitle="Create your account to participate in this special connection within our youth group. Get ready to spread joy and make someone's day extra special! 💝"
+      description="Create your account to participate in this special connection within our youth group. Get ready to spread joy and make someone's day extra special! 💝"
+      maxWidth="md"
     >
       <div className="space-y-6">
         <div className="text-center">
@@ -68,21 +63,31 @@ export default function Register() {
 
           <div className="space-y-4">
             <div>
-              <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
                 Full Name
               </label>
-              <NameInput
-                value={fullName}
-                onChange={setFullName}
-                onValidityChange={setIsNameValid}
-              />
+              <div className="mt-1 relative">
+                <input
+                  id="fullName"
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  className="input pl-10 bg-white/50 backdrop-blur-sm focus:bg-white"
+                  required
+                />
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
+                  </svg>
+                </div>
+              </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Password
               </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
+              <div className="mt-1 relative">
                 <input
                   id="password"
                   type="password"
@@ -94,7 +99,7 @@ export default function Register() {
                 />
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" />
+                    <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" />
                   </svg>
                 </div>
               </div>
@@ -109,7 +114,7 @@ export default function Register() {
             className="btn-secondary w-full text-lg py-3 relative"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            disabled={isLoading || !isNameValid}
+            disabled={isLoading}
           >
             {isLoading ? (
               <>
@@ -148,6 +153,8 @@ export default function Register() {
           </Link>
         </div>
       </div>
+
+      <QuickStartGuide />
     </AuthLayout>
   );
 }

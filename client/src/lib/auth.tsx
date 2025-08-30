@@ -1,15 +1,20 @@
 import React, { createContext, useContext, useEffect } from 'react';
-import Spinner from '../components/Spinner';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { auth, User } from './api';
+import Spinner from '../components/Spinner';
+
+interface LoginCredentials {
+  fullName: string;
+  password: string;
+}
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (data: { fullName: string; password: string }) => Promise<void>;
-  register: (data: { fullName: string; password: string }) => Promise<void>;
+  login: (credentials: LoginCredentials) => Promise<void>;
+  register: (credentials: LoginCredentials) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -19,7 +24,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const { data, isLoading } = useQuery({
+  const { data: user, isLoading } = useQuery({
     queryKey: ['auth'],
     queryFn: async () => {
       try {
@@ -63,12 +68,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     },
   });
 
-  const value = {
-    user: data ?? null,
+  const handleLogin = async (credentials: LoginCredentials) => {
+    await loginMutation.mutateAsync(credentials);
+  };
+
+  const handleRegister = async (credentials: LoginCredentials) => {
+    await registerMutation.mutateAsync(credentials);
+  };
+
+  const handleLogout = async () => {
+    await logoutMutation.mutateAsync();
+  };
+
+  const value: AuthContextType = {
+    user: user ?? null,
     isLoading,
-    login: loginMutation.mutateAsync,
-    register: registerMutation.mutateAsync,
-    logout: logoutMutation.mutateAsync,
+    login: handleLogin,
+    register: handleRegister,
+    logout: handleLogout,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
