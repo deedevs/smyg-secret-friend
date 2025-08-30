@@ -19,6 +19,7 @@ export async function requireAuth(
   try {
     const token = req.cookies[config.cookieName];
     if (!token) {
+      console.log('No token found');
       res.status(401).json({ 
         status: 'error',
         message: 'Please log in to continue',
@@ -31,6 +32,7 @@ export async function requireAuth(
     const user = await User.findById(decoded.userId);
 
     if (!user) {
+      console.log('User not found');
       res.status(401).json({ 
         status: 'error',
         message: 'User account not found',
@@ -51,6 +53,7 @@ export async function requireAuth(
         code: 'INVALID_TOKEN'
       });
     } else {
+      console.log('Authentication failed');
       res.status(401).json({ 
         status: 'error',
         message: 'Authentication failed',
