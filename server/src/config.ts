@@ -6,7 +6,7 @@ dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const MONGODB_URI = 'mongodb+srv://dladipo21:pWhs70U0bqHWlNcj@washme-app.lcwiu.mongodb.net/smyg-secret-friend?retryWrites=true&w=majority&appName=washme-app';
 
-const isProd = process.env.NODE_ENV === 'production';
+const isProd = true;
 
 export const config = {
   port: process.env.PORT || 4000,
