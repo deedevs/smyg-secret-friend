@@ -37,6 +37,11 @@ router.post('/register', requireAuth, async (req: AuthRequest, res: Response) =>
 router.get('/me', requireAuth, async (req: AuthRequest, res: Response) => {
   try {
     const friend = await SecretService.getAssignedFriend(req.user._id.toString());
+
+    console.log('Secret Friend Debug:', {
+      friend,
+    });
+
     if (!friend) {
       res.json({
         status: 'success',
