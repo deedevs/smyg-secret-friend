@@ -52,7 +52,7 @@ router.get('/me', requireAuth, async (req: AuthRequest, res: Response) => {
     res.json({
       status: 'success',
       data: {
-        friend: {
+        friendData: {
           id: friend._id,
           fullName: friend.fullName,
         }
