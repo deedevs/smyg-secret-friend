@@ -64,8 +64,9 @@ export const secret = {
   },
 
   getAssignedFriend: async () => {
-    const response = await api.get<{ friend: Friend | null }>('/secret/me');
-    return response.data;
+    const response = await api.get<{ status: string; data: { friendData: Friend | null } }>('/secret/me');
+    console.log('Get Assigned Friend Response:', response.data);
+    return response.data.data; // Return the data property which contains friendData
   },
 };
 

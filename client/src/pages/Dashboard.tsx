@@ -20,6 +20,8 @@ export default function Dashboard() {
     queryKey: ['assignedFriend'],
     queryFn: secret.getAssignedFriend,
   });
+  console.log('Friend Data:', friendData);
+
 
   const registerMutation = useMutation({
     mutationFn: secret.register,
@@ -64,7 +66,7 @@ export default function Dashboard() {
           </motion.div>
         )}
 
-        {user?.participating && !friendData?.friend && (
+        {user?.participating && !friendData?.friendData && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -87,7 +89,7 @@ export default function Dashboard() {
           </motion.div>
         )}
 
-        {user?.participating && friendData?.friend && (
+        {user?.participating && friendData?.friendData && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -98,7 +100,7 @@ export default function Dashboard() {
             </div>
             <div className="p-6 bg-gradient-to-r from-primary-100 to-secondary-100 rounded-xl">
               <p className="text-3xl font-bold text-gray-800">
-                {friendData.friend.fullName}
+                {friendData.friendData.fullName}
               </p>
             </div>
             <p className="text-gray-600">
@@ -116,7 +118,7 @@ export default function Dashboard() {
                 onClick={() => setShowFriendWishlist(true)}
                 className="btn-primary"
               >
-                View {friendData.friend.fullName}'s Wishlist
+                View {friendData.friendData.fullName}'s Wishlist
               </button>
             </div>
           </motion.div>
@@ -128,10 +130,10 @@ export default function Dashboard() {
         <WishlistModal onClose={() => setShowMyWishlist(false)} />
       )}
       
-      {showFriendWishlist && friendData?.friend && (
+      {showFriendWishlist && friendData?.friendData && (
         <FriendWishlist
           onClose={() => setShowFriendWishlist(false)}
-          friendName={friendData.friend.fullName}
+          friendName={friendData.friendData.fullName}
         />
       )}
     </PageLayout>
